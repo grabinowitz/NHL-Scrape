@@ -178,7 +178,7 @@ Master_Table <- read_csv("/Users/katerinalatour/Documents/JV/NHL/Scrape/NHL_15to
   
 ggplot(Master_Table %>% 
          filter(str_detect(Season, 'Regular')) %>% 
-         filter(Player == "Auston Matthews"), 
+         filter(Player == "Sidney Crosby"), 
        aes(x = Cumulative_Game, y = Cumulative_Goals, color = Season)) + 
   geom_line()
 
@@ -189,7 +189,7 @@ ggplot(Master_Table %>%
          summarise(Goals = max(Cumulative_Goals),
                    Points = max(Cumulative_Points)), 
        aes(x = Goals, color = Season)) +
-  geom_density()
+  geom_density() 
 
 
 
