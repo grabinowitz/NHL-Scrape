@@ -1,9 +1,8 @@
+
 #Use Hockey Reference to find total shots on a given date
 library(rvest)
-library(XML)
 library(tidyverse)
-library(data.table)
-library(ggplot2)
+
 
 
 all.teams <-
@@ -16,19 +15,12 @@ all.teams <-
   )
 
 
-seasons <- 
 
-  as.Date(paste0(substr(Master_Table$Date, 1, 4), "/", 
-         substr(Master_Table$Date, 5, 6), "/", 
-         substr(Master_Table$Date, 7, 8)
-         ))  
-  
-  
 all.teams.list <- as.list(all.teams)
 
 ##### INPUTS ##############
-Start_Date = "2019-03-01" 
-End_Date   = "2019-03-08"   
+Start_Date = "2018-10-04" 
+End_Date   = "2018-10-11"   
 ###########################
 
 #Create list of Dates between start_date and end_date
@@ -85,7 +77,7 @@ getStats <- function(x){
     boxscore %>% 
     read_html() %>% html_nodes(xpath = "//table")
   
-
+  
   #Get Team Names
   teams_extract <-
     boxscore %>% 
@@ -106,19 +98,19 @@ getStats <- function(x){
   stats_t2 = stats_t2[2:(nrow(stats_t2)-1), ]  
   
   
-  stats_t1$Team <- c(rep(slice_(teams_extract, 3)[[1]], nrow(stats_t1)))
-  stats_t1$Opp  <- c(rep(slice_(teams_extract, 5)[[1]], nrow(stats_t1)))
+  stats_t1$Team <- c(rep(slice(teams_extract, 3)[[1]], nrow(stats_t1)))
+  stats_t1$Opp  <- c(rep(slice(teams_extract, 5)[[1]], nrow(stats_t1)))
   stats_t1$Loc  <- c(rep("Away", nrow(stats_t1)))
   stats_t1$Game <- c(rep(paste0(stats_t1$Team, " @ ", stats_t1$Opp)))
   
   
-  stats_t2$Team <- c(rep(slice_(teams_extract, 5)[[1]], nrow(stats_t2)))
-  stats_t2$Opp  <- c(rep(slice_(teams_extract, 3)[[1]], nrow(stats_t2)))
+  stats_t2$Team <- c(rep(slice(teams_extract, 5)[[1]], nrow(stats_t2)))
+  stats_t2$Opp  <- c(rep(slice(teams_extract, 3)[[1]], nrow(stats_t2)))
   stats_t2$Loc  <- c(rep("Home", nrow(stats_t2)))
   stats_t2$Game <- c(rep(paste0(stats_t2$Opp, " @ ", stats_t2$Team)))
   
   stats_table <- rbind(stats_t1, stats_t2)
-
+  
 }
 
 
@@ -158,40 +150,14 @@ Extract$TOI <- Extract$TOI + (Extract$TOI - floor(Extract$TOI))*100/60
 #Format Date and Add Season
 Extract <-
   Extract %>% 
-#  mutate(Date = as.Date(paste0(substr(Date, 1, 4), "/",
-#                               substr(Date, 5, 6), "/", 
-#                               substr(Date, 7, 8)))) %>% 
+  #  mutate(Date = as.Date(paste0(substr(Date, 1, 4), "/",
+  #                               substr(Date, 5, 6), "/", 
+  #                               substr(Date, 7, 8)))) %>% 
   mutate(Season = ifelse(Date < "2016-04-11", "Regular_1516",
                          ifelse(Date < "2016-10-12", "Playoffs_1516",
-                         ifelse(Date < "2017-04-10", "Regular_1617",
-                         ifelse(Date < "2017-10-04", "Playoffs_1617",
-                         ifelse(Date < "2018-04-09", "Regular_1718",
-                         ifelse(Date < "2018-10-03", "Playoffs_1718",
-                         "Regular_1819")))))))
-
-
-write_csv(Master_Table, "/Users/katerinalatour/Documents/JV/NHL/Scrape/NHL_15to19.csv")
-Master_Table <- read_csv("/Users/katerinalatour/Documents/JV/NHL/Scrape/NHL_15to19.csv")
-
-
-
-  
-ggplot(Master_Table %>% 
-         filter(str_detect(Season, 'Regular')) %>% 
-         filter(Player == "Sidney Crosby"), 
-       aes(x = Cumulative_Game, y = Cumulative_Goals, color = Season)) + 
-  geom_line()
-
-
-ggplot(Master_Table %>% 
-         filter(str_detect(Season, 'Regular')) %>% 
-         group_by(Player, Season) %>% 
-         summarise(Goals = max(Cumulative_Goals),
-                   Points = max(Cumulative_Points)), 
-       aes(x = Goals, color = Season)) +
-  geom_density() 
-
-
-
-
+                                ifelse(Date < "2017-04-10", "Regular_1617",
+                                       ifelse(Date < "2017-10-04", "Playoffs_1617",
+                                              ifelse(Date < "2018-04-09", "Regular_1718",
+                                                     ifelse(Date < "2018-10-03", "Playoffs_1718",
+                                                            "Regular_1819")))))))
 
