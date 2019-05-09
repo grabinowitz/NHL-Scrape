@@ -20,7 +20,7 @@ all.teams.list <- as.list(all.teams)
 
 ##### INPUTS ##############
 Start_Date = "2018-10-03" 
-End_Date   = "2018-04-07"   
+End_Date   = "2019-04-07"   
 ###########################
 
 #Create list of Dates between start_date and end_date
