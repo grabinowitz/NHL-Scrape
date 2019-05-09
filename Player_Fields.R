@@ -60,21 +60,10 @@ Master_Table <-
 group_by(Season, Team, Player) %>% 
   mutate(Goals =  sum(G), 
          Games = sum(ifelse(G >= 0, 1, 0)))
-
-Test_LL <- 
-  Master_Table %>% 
-  filter(str_detect(Season, 'Regular') & Pts_Goals_Prop_Season > 0.2 & Season_Games > 30) %>% 
-  distinct(Player, Season, Pts_Goals_Prop_Season) %>% 
-  arrange(desc(Pts_Goals_Prop_Season))
-
 ggplot(data = Test %>% filter(Player == "Sidney Crosby"), 
        aes(x = Cumulative_Game, y = Pts_Goals_Prop, color = Season)) +
   geom_point()
 
-  mutate(Pts_Goals_Prop = )
+
   
-test2 <- 
-  Test %>% 
-  group_by(Season, Player) %>% 
-  summarise(avg_pts_on_goals = mean(Pts_Goals_Prop_Season),
-            std_pts_on_goals = sqrt(var(Pts_Goals_Prop)))
+
